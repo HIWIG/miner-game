@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
-    [Header("Sprites")]
-    public Sprite dirt;
-    public Sprite grass;
-    public Sprite stone;
+    [Header("Tile Atlas")]
+    public TileAtlas tileAtlas;
 
-    public Sprite log;
-    public Sprite leaf;
 
-    [Header("Trees")]
+    [Header("Trees and grain")]
     public int treeChance = 15;
+    public int grainChance = 3;
     public int minTreeHeight = 4;
-    public int maxTreeHeight = 6;
+    public int maxTreeHeight = 9;
 
     [Header("Generation settings")]
     public int chunkSize = 20;    
@@ -24,20 +21,62 @@ public class TerrainGenerator : MonoBehaviour
     public float heightMultiplier = 20f;
     public int heightAddition = 35;
 
-    [Header("Noise settings")]
-    public float terrainFreq = 0.1f;
-    public float seed;
-    public Texture2D noiseTexture;
+    private float terrainFreq = 0.06f;
+    private float seed;
+    private Texture2D noiseTexture;
+    private float limit = 0.25f;
+
+    [Header("Mineral settings")]
+    public float coalRarity = 0.3f;
+    private float coalBlockSize = 0.7f;
+    public float ironRarity = 0.5f;
+    private float ironBlockSize = 0.75f;
+    public float diamondRarity = 0.9f;
+    private float diamondBlockSize = 0.8f;
+    private Texture2D coalSpread;
+    private Texture2D ironSpread;
+    private Texture2D diamondSpread;
 
     private GameObject[] worldChunks;
     private List<Vector2> worldTiles = new List<Vector2>();
+    private List<GameObject> worldTilesObjects = new List<GameObject>();
+
+    private void OnValidate()
+    {
+        SpreadElement();
+        GenerateMinerals();
+    }
 
     private void Start()
     {
+        //rozprzestrzenienie elementów na mapie
+        SpreadElement();
+
         seed = Random.Range(-10000, 10000);
-        GenerateNoiseTexture();
+        //generate minerals:
+        GenerateMinerals();
         CreateChunks();
         GenerateTerrain();
+    }
+
+    private void GenerateMinerals()
+    {
+        GenerateNoiseTexture(terrainFreq, limit, noiseTexture);
+        GenerateNoiseTexture(coalRarity, coalBlockSize, coalSpread);
+        GenerateNoiseTexture(ironRarity, ironBlockSize, ironSpread);
+        GenerateNoiseTexture(diamondRarity, diamondBlockSize, diamondSpread);
+    }
+
+    private void SpreadElement()
+    {
+
+        if (noiseTexture == null)
+        {
+            noiseTexture = new Texture2D(worldSize, worldSize);
+            coalSpread = new Texture2D(worldSize, worldSize);
+            ironSpread = new Texture2D(worldSize, worldSize);
+            diamondSpread = new Texture2D(worldSize, worldSize);
+        }
     }
 
     public void CreateChunks()
@@ -65,15 +104,27 @@ public class TerrainGenerator : MonoBehaviour
                 Sprite tileSprite;
                 if(y < height - dirtLayerHeight)
                 {
-                    tileSprite = stone;
+                    if (coalSpread.GetPixel(x, y).r > 0.5f)
+                    {
+                        tileSprite = SetRandomSprite(tileAtlas.coal);
+                    }
+                    else if (ironSpread.GetPixel(x, y).r > 0.5f)
+                    {
+                        tileSprite = SetRandomSprite(tileAtlas.iron);
+                    }
+                    else if (diamondSpread.GetPixel(x, y).r > 0.5f)
+                    {
+                        tileSprite = SetRandomSprite(tileAtlas.diamond);
+                    }
+                    else tileSprite = SetRandomSprite(tileAtlas.stone);
                 }
                 else if (y < height - 1)
                 {
-                    tileSprite = dirt;
+                    tileSprite = SetRandomSprite(tileAtlas.dirt);
                 }
                 else
                 {
-                    tileSprite = grass;
+                    tileSprite = tileAtlas.grass.tileSprite;
                 }
                 PlaceTile(tileSprite, x, y);
                 if (y >= height - 1)
@@ -81,28 +132,29 @@ public class TerrainGenerator : MonoBehaviour
                     int t = Random.Range(0, treeChance);
                     if (t == 1)
                     {
-                        if (worldTiles.Contains(new Vector2(x, y)))
-                        {
-                            GenerateTree(x, y + 1);
-                        }
+                        GenerateTree(x, y + 1);   
+                    }
+                    t = Random.Range(0, grainChance);
+                    if (t == 1)
+                    {
+                        GenerateGrass(x, y + 1);
                     }
                 }
             }
         }
     }
 
-    public void GenerateNoiseTexture()
+    private Sprite SetRandomSprite(TileClass[] spread)
     {
-        noiseTexture = new Texture2D(worldSize, worldSize);
-        for (int x = 0; x < noiseTexture.width; x++)
-        {
-            for (int y = 0; y < noiseTexture.height; y++)
-            {
-                float v = Mathf.PerlinNoise((x + seed) * terrainFreq, (y + seed) * terrainFreq);
-                noiseTexture.SetPixel(x, y, new Color(v, v, v));
-            }
-        }
-        noiseTexture.Apply();
+        int rand = Random.Range(0, spread.Length);
+        return spread[rand].tileSprite;
+    }
+
+    private void GenerateGrass(int x, int y)
+    {
+        int t = Random.Range(0, tileAtlas.grain.Length);
+        var tileSprite = tileAtlas.grain[t].tileSprite;
+        PlaceTile(tileSprite, x, y);
     }
 
     void GenerateTree(int x, int y)
@@ -112,27 +164,46 @@ public class TerrainGenerator : MonoBehaviour
         //pien drzewa
         for (int i = 0; i < treeHeight; i++)
         {
-            PlaceTile(log, x, y + i);
+            PlaceTile(tileAtlas.log.tileSprite, x, y + i);
         }
         //liscie
         for (int i = 0; i < 3; i++)
         {
-            PlaceTile(leaf, x + 1, y + treeHeight + i);
-            PlaceTile(leaf, x - 1, y + treeHeight + i);
+            PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + treeHeight + i);
+            PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + treeHeight + i);
         }
         for (int i = 0; i < 4; i++)
         {
-            PlaceTile(leaf, x, y + treeHeight + i);
+            PlaceTile(tileAtlas.leaf.tileSprite, x, y + treeHeight + i);
         }
+    }
+    public void GenerateNoiseTexture(float frequency, float limit, Texture2D noise)
+    {
+        for (int x = 0; x < noise.width; x++)
+        {
+            for (int y = 0; y < noise.height; y++)
+            {
+                float v = Mathf.PerlinNoise((x + seed) * frequency, (y + seed) * frequency);
+                if (v > limit)
+                {
+                    noise.SetPixel(x, y, Color.white);
+                }
+                else
+                {
+                    noise.SetPixel(x, y, Color.black);
+                }
+            }
+        }
+        noise.Apply();
     }
 
     public void PlaceTile(Sprite tileSprite, int x, int y)
     {
         GameObject newTile = new GameObject();
 
-        float chunkCoord = (Mathf.Round(x / chunkSize) * chunkSize);
+        int chunkCoord = Mathf.RoundToInt(Mathf.RoundToInt(x / chunkSize) * chunkSize);
         chunkCoord /= chunkSize;
-        newTile.transform.parent = worldChunks[(int)chunkCoord].transform;
+        newTile.transform.parent = worldChunks[chunkCoord].transform;
 
         newTile.AddComponent<SpriteRenderer>();
         newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
@@ -140,5 +211,6 @@ public class TerrainGenerator : MonoBehaviour
         newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
 
         worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
+        worldTilesObjects.Add(newTile);
     }
 }
