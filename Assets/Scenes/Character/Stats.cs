@@ -5,7 +5,7 @@ using UnityEngine;
 public class Stats : MonoBehaviour
 {
     public Texture2D healthTexture;
-    public Texture2D moneyTexture;
+   // public Texture2D moneyTexture;
 
     private float maxHealth = 100;
     private float currentHealth = 100;
