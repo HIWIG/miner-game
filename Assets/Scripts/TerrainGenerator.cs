@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class TerrainGenerator : MonoBehaviour
 {
+    public PlayerController player;
+    public CameraController camera;
+
     [Header("Tile Atlas")]
     public TileAtlas tileAtlas;
 
@@ -11,8 +14,8 @@ public class TerrainGenerator : MonoBehaviour
     [Header("Trees and grain")]
     public int treeChance = 15;
     public int grainChance = 3;
-    public int minTreeHeight = 4;
-    public int maxTreeHeight = 9;
+    public int minTreeHeight = 3;
+    public int maxTreeHeight = 5;
 
     [Header("Generation settings")]
     public int chunkSize = 20;    
@@ -98,7 +101,13 @@ public class TerrainGenerator : MonoBehaviour
         for (int x = 0; x < worldSize; x++)
         {
             float height = Mathf.PerlinNoise((x + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition;
-
+            if(x == worldSize/2)
+            {
+                player.spawPosition = new Vector2(x, height + 2);
+                camera.Spawn(new Vector3(player.spawPosition.x, player.spawPosition.y, camera.transform.position.z));
+                camera.worldSize = worldSize;
+                player.Spawn();
+            }
             for (int y = 0; y < height; y++)
             {
                 Sprite tileSprite;
@@ -126,7 +135,7 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     tileSprite = tileAtlas.grass.tileSprite;
                 }
-                PlaceTile(tileSprite, x, y);
+                PlaceTile(tileSprite, x, y, false);
                 if (y >= height - 1)
                 {
                     int t = Random.Range(0, treeChance);
@@ -154,7 +163,7 @@ public class TerrainGenerator : MonoBehaviour
     {
         int t = Random.Range(0, tileAtlas.grain.Length);
         var tileSprite = tileAtlas.grain[t].tileSprite;
-        PlaceTile(tileSprite, x, y);
+        PlaceTile(tileSprite, x, y, true);
     }
 
     void GenerateTree(int x, int y)
@@ -164,17 +173,17 @@ public class TerrainGenerator : MonoBehaviour
         //pien drzewa
         for (int i = 0; i < treeHeight; i++)
         {
-            PlaceTile(tileAtlas.log.tileSprite, x, y + i);
+            PlaceTile(tileAtlas.log.tileSprite, x, y + i, true);
         }
         //liscie
         for (int i = 0; i < 3; i++)
         {
-            PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + treeHeight + i);
-            PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + treeHeight + i);
+            PlaceTile(tileAtlas.leaf.tileSprite, x + 1, y + treeHeight + i, true);
+            PlaceTile(tileAtlas.leaf.tileSprite, x - 1, y + treeHeight + i, true);
         }
         for (int i = 0; i < 4; i++)
         {
-            PlaceTile(tileAtlas.leaf.tileSprite, x, y + treeHeight + i);
+            PlaceTile(tileAtlas.leaf.tileSprite, x, y + treeHeight + i, true);
         }
     }
     public void GenerateNoiseTexture(float frequency, float limit, Texture2D noise)
@@ -197,20 +206,30 @@ public class TerrainGenerator : MonoBehaviour
         noise.Apply();
     }
 
-    public void PlaceTile(Sprite tileSprite, int x, int y)
+    public void PlaceTile(Sprite tileSprite, int x, int y, bool backgroundElement)
     {
-        GameObject newTile = new GameObject();
+        if (!worldTiles.Contains(new Vector2Int(x, y)) && x >= 0 && x <= worldSize && y >= 0 && y <= worldSize)
+        {
+            GameObject newTile = new GameObject();
 
-        int chunkCoord = Mathf.RoundToInt(Mathf.RoundToInt(x / chunkSize) * chunkSize);
-        chunkCoord /= chunkSize;
-        newTile.transform.parent = worldChunks[chunkCoord].transform;
+            int chunkCoord = Mathf.RoundToInt(Mathf.RoundToInt(x / chunkSize) * chunkSize);
+            chunkCoord /= chunkSize;
+            newTile.transform.parent = worldChunks[chunkCoord].transform;
 
-        newTile.AddComponent<SpriteRenderer>();
-        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-        newTile.name = tileSprite.name;
-        newTile.transform.position = new Vector2(x + 0.5f, y + 0.5f);
+            newTile.AddComponent<SpriteRenderer>();
+            if (!backgroundElement)
+            {
+                newTile.AddComponent<BoxCollider2D>();
+                newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
+                newTile.tag = "Ground";
+            }
 
-        worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
-        worldTilesObjects.Add(newTile);
+            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+            newTile.name = tileSprite.name;
+            newTile.transform.position = new Vector3(x + 0.5f, y + 0.5f, -2);
+
+            worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
+            worldTilesObjects.Add(newTile);
+        }
     }
 }
