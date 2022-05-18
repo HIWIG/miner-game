@@ -13,5 +13,12 @@ MonoBehaviour:
   m_Name: Grain
   m_EditorClassIdentifier: 
   tileName: Grain
-  tileSprite: {fileID: 21300000, guid: 00e2137d66217464680cbaa37c7a9dea, type: 3}
-  rarity: 0
+  tileSprite:
+  - {fileID: 21300000, guid: 00e2137d66217464680cbaa37c7a9dea, type: 3}
+  - {fileID: 21300000, guid: 79a555952ebff7b46adf3f7c55996f00, type: 3}
+  - {fileID: 21300000, guid: 54f76dd6228544649a0d3838defb427a, type: 3}
+  - {fileID: 21300000, guid: 0382ffa90dcc7d84ba3bb746e262d9d8, type: 3}
+  - {fileID: 21300000, guid: af6c03ce60e16224b8c23fa1bdcb22de, type: 3}
+  - {fileID: 21300000, guid: 153b3a7c1fdc8db49bdda346968e284f, type: 3}
+  - {fileID: 21300000, guid: a88c2e9d413e1654eb42c9bf9f41e9b6, type: 3}
+  inBackground: 1

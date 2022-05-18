@@ -12,27 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640938428f02df54c95843e9f7ee63c4, type: 3}
   m_Name: TileAtlas
   m_EditorClassIdentifier: 
-  dirt:
-  - {fileID: 11400000, guid: c729368e5623a5f4cae1461a84236959, type: 2}
-  - {fileID: 11400000, guid: 727a055d14821164398b591d04ff5b3f, type: 2}
+  dirt: {fileID: 11400000, guid: c729368e5623a5f4cae1461a84236959, type: 2}
   grass: {fileID: 11400000, guid: 09368bf8c35421f4ca4ff134fb8b29cb, type: 2}
-  stone:
-  - {fileID: 11400000, guid: 8d377a4e4c53bc04587e21713f74c856, type: 2}
-  - {fileID: 11400000, guid: db75b19eae16a9e43a2445b32426d4e0, type: 2}
-  grain:
-  - {fileID: 11400000, guid: a8b147d78bd6dd24a9273ee5afe7aed6, type: 2}
-  - {fileID: 11400000, guid: dea549703661a434abc5064962d4605a, type: 2}
-  - {fileID: 11400000, guid: 930f518309c557f4493a9907b3cae192, type: 2}
-  - {fileID: 11400000, guid: f7465f7073209b743b4bc62ff06a2de7, type: 2}
-  - {fileID: 11400000, guid: ff80aeb809d199f45a75c0bc7d738f77, type: 2}
+  stone: {fileID: 11400000, guid: 8d377a4e4c53bc04587e21713f74c856, type: 2}
+  grain: {fileID: 11400000, guid: a8b147d78bd6dd24a9273ee5afe7aed6, type: 2}
   log: {fileID: 11400000, guid: 12c544524b624f74a8b9919b4a7cf9d5, type: 2}
   leaf: {fileID: 11400000, guid: a659f33f16153314db39b6f1e11b1837, type: 2}
-  coal:
-  - {fileID: 11400000, guid: d14a16ef92729114a8d55d8e2a2c8bdc, type: 2}
-  - {fileID: 11400000, guid: 9dc8c59775da49648a8f510b84a1ae44, type: 2}
-  iron:
-  - {fileID: 11400000, guid: 60bfcad6e6608ca45b4001d160454ec3, type: 2}
-  - {fileID: 11400000, guid: cb732df5e282d2a448b16b48e7d70c94, type: 2}
-  diamond:
-  - {fileID: 11400000, guid: d26f633115e449344b1c97d012b4d9f9, type: 2}
-  - {fileID: 11400000, guid: 0a00311f5e9863e42aa5e051ea3a116d, type: 2}
+  coal: {fileID: 11400000, guid: d14a16ef92729114a8d55d8e2a2c8bdc, type: 2}
+  iron: {fileID: 11400000, guid: 60bfcad6e6608ca45b4001d160454ec3, type: 2}
+  diamond: {fileID: 11400000, guid: d26f633115e449344b1c97d012b4d9f9, type: 2}
+  cabin: {fileID: 11400000, guid: 5d030bc493a1a2d4ba04d6f1364810b2, type: 2}
+  cabinWalls: {fileID: 11400000, guid: 7a749efea8aa61042bbca372aca8d1d5, type: 2}
+  cabinInside: {fileID: 11400000, guid: 8b7f82232d6822942ae1a65bf2fadff5, type: 2}
+  cabinWallsInside: {fileID: 11400000, guid: e0543cf0d53f57846afdfe1b73d1fbb9, type: 2}
+  cabinWindow: {fileID: 11400000, guid: e5d9065d43d11904a8b418d0697950ff, type: 2}
