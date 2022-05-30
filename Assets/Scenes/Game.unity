@@ -512,6 +512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1594691272}
   cameraController: {fileID: 519764062}
+  tileDrop: {fileID: 7234595547320005319, guid: 6629c9c4d37920243aa458dccc97e7a1, type: 3}
   tileAtlas: {fileID: 11400000, guid: a10af851cecfccb4ea42d17634b47d78, type: 2}
   treeChance: 15
   grainChance: 3

@@ -15,4 +15,7 @@ MonoBehaviour:
   tileName: Ladder
   tileSprite:
   - {fileID: 21300000, guid: 9833efda3c997be42937499bfbcc0fba, type: 3}
+  droppedSprite: {fileID: 0}
   inBackground: 1
+  isMineral: 0
+  canClimb: 1

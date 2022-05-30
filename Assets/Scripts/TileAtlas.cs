@@ -21,4 +21,7 @@ public class TileAtlas : ScriptableObject
     public TileClass cabinInside;
     public TileClass cabinWallsInside;
     public TileClass cabinWindow;
+
+    public TileClass backgroundStone;
+    public TileClass Ladder;
 }

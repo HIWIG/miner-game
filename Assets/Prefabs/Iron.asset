@@ -16,4 +16,6 @@ MonoBehaviour:
   tileSprite:
   - {fileID: 21300000, guid: adb20e5e6464b9f4ebf859934e43252a, type: 3}
   - {fileID: 21300000, guid: 44a815205267773458dd1e8303120f96, type: 3}
+  droppedSprite: {fileID: 21300000, guid: abf685ec061824b42af43081b522c6e0, type: 3}
   inBackground: 0
+  isMineral: 1

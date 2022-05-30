@@ -26,3 +26,5 @@ MonoBehaviour:
   cabinInside: {fileID: 11400000, guid: 8b7f82232d6822942ae1a65bf2fadff5, type: 2}
   cabinWallsInside: {fileID: 11400000, guid: e0543cf0d53f57846afdfe1b73d1fbb9, type: 2}
   cabinWindow: {fileID: 11400000, guid: e5d9065d43d11904a8b418d0697950ff, type: 2}
+  backgroundStone: {fileID: 11400000, guid: a62251dc052e97b4aaacac725e5b1605, type: 2}
+  Ladder: {fileID: 11400000, guid: d6754ad0615a0954f98ca21a935ebaa2, type: 2}

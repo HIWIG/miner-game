@@ -7,6 +7,8 @@ public class TerrainGenerator : MonoBehaviour
     public PlayerController player;
     public CameraController cameraController;
 
+    public GameObject tileDrop;
+
     [Header("Tile Atlas")]
     public TileAtlas tileAtlas;
 
@@ -100,7 +102,7 @@ public class TerrainGenerator : MonoBehaviour
         cabinSpread = new Texture2D(worldSize, worldSize);
 
         float height = Mathf.PerlinNoise((0 + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition;
-        GenerateCabinTexture(cabinLength, cabinSpread);
+        
         for (int x = 0; x < worldSize; x++)
         {
             if (x == worldSize/2)
@@ -137,7 +139,7 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     tileClass = tileAtlas.grass;
                 }
-                PlaceTile(tileClass, x, y, false, 1);
+                PlaceTile(tileClass, x, y, 1);
                 if (y >= height - 1)
                 {
                     int t = Random.Range(0, treeChance);
@@ -158,7 +160,8 @@ public class TerrainGenerator : MonoBehaviour
                 {
                     cabinAtHeigth = height;
                     cabinHeightSet = true;
-                    Debug.Log(cabinAtHeigth);
+
+                    GenerateCabinTexture(cabinLength, cabinSpread);
                 }
                 TileClass tileClassOutside;
                 TileClass tileClassInside;
@@ -184,8 +187,8 @@ public class TerrainGenerator : MonoBehaviour
                                 tileClassInside = tileAtlas.cabinInside;
                             }
                         }
-                        PlaceTile(tileClassOutside, x, (int)cabinAtHeigth + 1 + i, true, -2);
-                        PlaceTile(tileClassInside, x, (int)cabinAtHeigth + 1 + i, true, -5);
+                        PlaceTile(tileClassOutside, x, (int)cabinAtHeigth + 1 + i, -2);
+                        PlaceTile(tileClassInside, x, (int)cabinAtHeigth + 1 + i, -5);
                     }
                 }
 
@@ -201,7 +204,7 @@ public class TerrainGenerator : MonoBehaviour
 
     private void GenerateGrass(int x, int y)
     {
-        PlaceTile(tileAtlas.grain, x, y, true, 0);
+        PlaceTile(tileAtlas.grain, x, y, 0);
     }
 
     void GenerateTree(int x, int y)
@@ -211,17 +214,17 @@ public class TerrainGenerator : MonoBehaviour
         //pien drzewa
         for (int i = 0; i < treeHeight; i++)
         {
-            PlaceTile(tileAtlas.log, x, y + i, true, 0);
+            PlaceTile(tileAtlas.log, x, y + i, 0);
         }
         //liscie
         for (int i = 0; i < 3; i++)
         {
-            PlaceTile(tileAtlas.leaf, x + 1, y + treeHeight + i, true, 0);
-            PlaceTile(tileAtlas.leaf, x - 1, y + treeHeight + i, true, 0);
+            PlaceTile(tileAtlas.leaf, x + 1, y + treeHeight + i, 0);
+            PlaceTile(tileAtlas.leaf, x - 1, y + treeHeight + i, 0);
         }
         for (int i = 0; i < 4; i++)
         {
-            PlaceTile(tileAtlas.leaf, x, y + treeHeight + i, true, 0);
+            PlaceTile(tileAtlas.leaf, x, y + treeHeight + i, 0);
         }
     }
     public void GenerateNoiseTexture(float frequency, float limit, Texture2D noise)
@@ -262,50 +265,66 @@ public class TerrainGenerator : MonoBehaviour
         cabin.Apply();
     }
 
+
     public void RemoveTile(int x, int y)
     {
-        if (worldTiles.Contains(new Vector2Int(x, y)) && x >= 0 && x <= worldSize && y >= 0 && y <= worldSize)
+        if (worldTiles.Contains(new Vector2Int(x, y)) && 
+            x >= 0 && 
+            x <= worldSize && 
+            y >= 0 && 
+            y <= worldSize &&
+            !worldTileClasses[worldTiles.IndexOf(new Vector2(x, y))].inBackground
+            )
         {
             int index = worldTiles.IndexOf(new Vector2(x, y));
-            Debug.Log(index);
             Destroy(worldTilesObjects[index]);
+            if (worldTileClasses[index].isMineral)
+            {
+                GameObject newTileDrop = Instantiate(tileDrop, new Vector2(x, y + 0.5f), Quaternion.identity);
+                newTileDrop.GetComponent<SpriteRenderer>().sprite = worldTileClasses[index].droppedSprite;
+            }
             worldTilesObjects.RemoveAt(index);
             worldTiles.RemoveAt(index);
             worldTileClasses.RemoveAt(index);
+            var newBackgroundStoneTile = tileAtlas.backgroundStone;
+            newBackgroundStoneTile.inBackground = true;
+            PlaceTile(newBackgroundStoneTile, x, y, -1);
         }
     }
 
-    public void PlaceTile(TileClass tile, int x, int y, bool backgroundElement, int sortingOrder)
+    public void PlaceTile(TileClass tile, int x, int y, int sortingOrder)
     {
+        bool backgroundElement = tile.inBackground;
+        GameObject newTile = new GameObject();
 
-            GameObject newTile = new GameObject();
+        newTile.AddComponent<SpriteRenderer>();
+        if (!backgroundElement)
+        {
+            newTile.AddComponent<BoxCollider2D>();
+            newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
+            newTile.tag = "Ground";
+        }
+        if(tile.canClimb)
+        {
+            newTile.AddComponent<BoxCollider2D>();
+            newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
+            newTile.GetComponent<BoxCollider2D>().isTrigger = true;
+            newTile.tag = "Ladder";
+        }
+        int rand = Random.Range(0, tile.tileSprite.Length);
+        var tileSprite = tile.tileSprite[rand];
 
-            //int chunkCoord = Mathf.RoundToInt(Mathf.RoundToInt(x / chunkSize) * chunkSize);
-            //chunkCoord /= chunkSize;
-            //newTile.transform.parent = worldChunks[chunkCoord].transform;
-
-            newTile.AddComponent<SpriteRenderer>();
-            if (!backgroundElement)
-            {
-                newTile.AddComponent<BoxCollider2D>();
-                newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
-                newTile.tag = "Ground";
-            }
-
-            int rand = Random.Range(0, tile.tileSprite.Length);
-            var tileSprite = tile.tileSprite[rand];
-
-            newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
-            newTile.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
-            newTile.name = tile.tileName;
-            newTile.transform.position = new Vector3(x + 0.5f, y + 0.5f, 0);
+        newTile.GetComponent<SpriteRenderer>().sprite = tileSprite;
+        newTile.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
+        newTile.name = tile.tileName;
+        newTile.transform.position = new Vector3(x + 0.5f, y + 0.5f, 0);
             
 
-            worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
-            worldTilesObjects.Add(newTile);
-            worldTileClasses.Add(tile);
-        
-    }
+        worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
+        worldTilesObjects.Add(newTile);
+        worldTileClasses.Add(tile);
+}
+
 
     public void InsideCabin(Vector2 playerPosition)
     {

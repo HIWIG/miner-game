@@ -11,7 +11,10 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed;
     public float jumpForce;
     public bool onGround;
+    public bool onLadder;
+    public bool isClimbing;
     public float horizontal;
+    public float vertical;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -36,6 +39,10 @@ public class PlayerController : MonoBehaviour
         {
             onGround = true;
         }
+        if(collision.CompareTag("Ladder"))
+        {
+            onLadder = true;
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -43,12 +50,16 @@ public class PlayerController : MonoBehaviour
         {
             onGround = false;
         }
+        if (collision.CompareTag("Ladder"))
+        {
+            onLadder = false;
+        }
     }
     private void FixedUpdate()
     {
         horizontal = Input.GetAxis("Horizontal");
         float jump = Input.GetAxis("Jump");
-        float vertical = Input.GetAxis("Vertical");
+        vertical = Input.GetAxis("Vertical");
 
         Vector2 movement = new Vector2(horizontal * moveSpeed, rb.velocity.y);
 
@@ -63,8 +74,12 @@ public class PlayerController : MonoBehaviour
             }
             else if (place)
             {
-                if (!terrainGenerator.worldTiles.Contains(new Vector2Int(mousePosition.x, mousePosition.y)) && mousePosition.x >= 0 && mousePosition.x <= terrainGenerator.worldSize && mousePosition.y >= 0 && mousePosition.y <= terrainGenerator.worldSize)
-                    terrainGenerator.PlaceTile(selectedTile, mousePosition.x, mousePosition.y, true, 2);
+                if (terrainGenerator.worldTileClasses[terrainGenerator.worldTiles.IndexOf(new Vector2(mousePosition.x, mousePosition.y))].inBackground &&
+                    mousePosition.x >= 0 && 
+                    mousePosition.x <= terrainGenerator.worldSize && 
+                    mousePosition.y >= 0 && 
+                    mousePosition.y <= terrainGenerator.worldSize)
+                    terrainGenerator.PlaceTile(selectedTile, mousePosition.x, mousePosition.y, 2);
             }
         }
         
@@ -81,6 +96,15 @@ public class PlayerController : MonoBehaviour
             if(onGround)
                 movement.y = jumpForce;
         }
+        if(isClimbing)
+        {
+            rb.gravityScale = 0f;
+            rb.velocity = new Vector2(rb.velocity.x, vertical * moveSpeed);
+        }
+        else
+        {
+            rb.gravityScale = 1;
+        }
         rb.velocity = movement;
     }
     private void Update()
@@ -93,5 +117,15 @@ public class PlayerController : MonoBehaviour
 
         var position = GetComponent<Transform>().position;
         terrainGenerator.InsideCabin(position);
+
+        if (onLadder & Mathf.Abs(vertical) > 0)
+        {
+            isClimbing = true;
+        }
+        else
+        {
+            isClimbing = false;
+        }
+
     }
 }
