@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637895147951816986
-    m_Hash: 1522384342
+      ticks: 637894979580000000
+    m_Hash: 3009170387
   m_LockFileStatus:
     m_FilePath: C:/Users/ASUS ROG/Documents/GitHub/miner-game/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637895147951816986
-    m_Hash: 3269139623
+      ticks: 637894979580000000
+    m_Hash: 1805831578
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
