@@ -6,6 +6,9 @@ public class TerrainGenerator : MonoBehaviour
 {
     public PlayerController player;
     public CameraController cameraController;
+    public GameObject Item;
+    public GameObject ItemSell;
+    public GameObject Menu;
 
     public GameObject tileDrop;
 
@@ -19,7 +22,7 @@ public class TerrainGenerator : MonoBehaviour
     public int minTreeHeight = 3;
     public int maxTreeHeight = 5;
 
-    [Header("Generation settings")]    
+    [Header("Generation settings")]
     public int worldSize = 100;
     public int dirtLayerHeight = 5;
     public float heightMultiplier = 20f;
@@ -52,6 +55,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> worldTilesObjects = new List<GameObject>();
     public List<TileClass> worldTileClasses = new List<TileClass>();
 
+    bool Value;
     private void OnValidate()
     {
         SpreadElement();
@@ -72,7 +76,7 @@ public class TerrainGenerator : MonoBehaviour
     {
         HideCabinOutside();
     }
-    
+
 
     private void GenerateMinerals()
     {
@@ -94,7 +98,7 @@ public class TerrainGenerator : MonoBehaviour
         }
     }
 
-   
+
     public void GenerateTerrain()
     {
 
@@ -102,10 +106,10 @@ public class TerrainGenerator : MonoBehaviour
         cabinSpread = new Texture2D(worldSize, worldSize);
 
         float height = Mathf.PerlinNoise((0 + seed) * terrainFreq, seed * terrainFreq) * heightMultiplier + heightAddition;
-        
+
         for (int x = 0; x < worldSize; x++)
         {
-            if (x == worldSize/2)
+            if (x == worldSize / 2)
             {
                 player.spawPosition = new Vector2(x, height + 2);
                 cameraController.Spawn(new Vector3(player.spawPosition.x, player.spawPosition.y, cameraController.transform.position.z));
@@ -115,7 +119,7 @@ public class TerrainGenerator : MonoBehaviour
             for (int y = 0; y < height; y++)
             {
                 TileClass tileClass;
-                if(y < height - dirtLayerHeight)
+                if (y < height - dirtLayerHeight)
                 {
                     if (coalSpread.GetPixel(x, y).r > 0.5f)
                     {
@@ -143,9 +147,9 @@ public class TerrainGenerator : MonoBehaviour
                 if (y >= height - 1)
                 {
                     int t = Random.Range(0, treeChance);
-                    if (t == 1) 
+                    if (t == 1)
                     {
-                        GenerateTree(x, y + 1);   
+                        GenerateTree(x, y + 1);
                     }
                     t = Random.Range(0, grainChance);
                     if (t == 1)
@@ -154,9 +158,9 @@ public class TerrainGenerator : MonoBehaviour
                     }
                 }
             }
-            if(x > worldSize/2 & x < (worldSize/2) + cabinLength)
+            if (x > worldSize / 2 & x < (worldSize / 2) + cabinLength)
             {
-                if(!cabinHeightSet)
+                if (!cabinHeightSet)
                 {
                     cabinAtHeigth = height;
                     cabinHeightSet = true;
@@ -165,18 +169,19 @@ public class TerrainGenerator : MonoBehaviour
                 }
                 TileClass tileClassOutside;
                 TileClass tileClassInside;
-                if(cabinSpread.GetPixel(x, (int)cabinAtHeigth ).r > 0.5f)
+                if (cabinSpread.GetPixel(x, (int)cabinAtHeigth).r > 0.5f)
                 {
                     for (int i = 0; i < cabinHeigth; i++)
                     {
-                        if ((cabinSpread.GetPixel(x - 1, (int)cabinAtHeigth).r > 0.5f) ^ (cabinSpread.GetPixel(x + 1, (int)cabinAtHeigth).r > 0.5f)) {
-                            
+                        if ((cabinSpread.GetPixel(x - 1, (int)cabinAtHeigth).r > 0.5f) ^ (cabinSpread.GetPixel(x + 1, (int)cabinAtHeigth).r > 0.5f))
+                        {
+
                             tileClassOutside = tileAtlas.cabinWalls;
                             tileClassInside = tileAtlas.cabinWallsInside;
                         }
                         else
                         {
-                            if(i == cabinHeigth/2 - 1)
+                            if (i == cabinHeigth / 2 - 1)
                             {
                                 tileClassOutside = tileAtlas.cabinWindow;
                                 tileClassInside = tileAtlas.cabinWindow;
@@ -252,7 +257,7 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int y = 0; y < cabin.height; y++)
             {
-                if(x > cabin.width/2 & x < (cabin.width/2) + cabinLength)
+                if (x > cabin.width / 2 & x < (cabin.width / 2) + cabinLength)
                 {
                     cabin.SetPixel(x, y, Color.white);
                 }
@@ -268,10 +273,10 @@ public class TerrainGenerator : MonoBehaviour
 
     public void RemoveTile(int x, int y)
     {
-        if (worldTiles.Contains(new Vector2Int(x, y)) && 
-            x >= 0 && 
-            x <= worldSize && 
-            y >= 0 && 
+        if (worldTiles.Contains(new Vector2Int(x, y)) &&
+            x >= 0 &&
+            x <= worldSize &&
+            y >= 0 &&
             y <= worldSize &&
             !worldTileClasses[worldTiles.IndexOf(new Vector2(x, y))].inBackground
             )
@@ -304,7 +309,7 @@ public class TerrainGenerator : MonoBehaviour
             newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
             newTile.tag = "Ground";
         }
-        if(tile.canClimb)
+        if (tile.canClimb)
         {
             newTile.AddComponent<BoxCollider2D>();
             newTile.GetComponent<BoxCollider2D>().size = Vector2.one;
@@ -318,33 +323,39 @@ public class TerrainGenerator : MonoBehaviour
         newTile.GetComponent<SpriteRenderer>().sortingOrder = sortingOrder;
         newTile.name = tile.tileName;
         newTile.transform.position = new Vector3(x + 0.5f, y + 0.5f, 0);
-            
+
 
         worldTiles.Add(newTile.transform.position - (Vector3.one * 0.5f));
         worldTilesObjects.Add(newTile);
         worldTileClasses.Add(tile);
-}
+    }
 
 
     public void InsideCabin(Vector2 playerPosition)
     {
+
         if (cabinSpread.GetPixel((int)playerPosition.x, (int)playerPosition.y).r > 0.5f & playerPosition.y >= cabinAtHeigth)
         {
             var tileIndex = worldTiles.IndexOf(new Vector2((int)playerPosition.x, (int)playerPosition.y));
             insideCabin = true;
+
+            ShowButtonBuySell();
         }
         else
         {
             insideCabin = false;
+            HideButtonBuySell();
+            hightSell();
+            hight();
         }
     }
     public void HideCabinOutside()
     {
-        if(insideCabin)
+        if (insideCabin)
         {
             foreach (var tile in worldTilesObjects)
             {
-                if(tile.name.Contains("Inside"))
+                if (tile.name.Contains("Inside"))
                 {
                     tile.GetComponent<SpriteRenderer>().sortingOrder = 2;
                 }
@@ -361,5 +372,38 @@ public class TerrainGenerator : MonoBehaviour
             }
         }
     }
+
+
+    public void hight()
+    {
+        Item.SetActive(false);
+    }
+    public void Show()
+    {
+        Value = false;
+        Item.SetActive(true);
+    }
+
+    public void hightSell()
+    {
+        ItemSell.SetActive(false);
+    }
+    public void ShowSell()
+    {
+        ItemSell.SetActive(true);
+
+    }
+
+    public void HideButtonBuySell()
+    {
+        Menu.SetActive(false);
+    }
+    public void ShowButtonBuySell()
+    {
+        
+                   Menu.SetActive(true);
+        
+      
+
+    }
 }
-    
