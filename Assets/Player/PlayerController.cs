@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Inventory inventory;
+    public bool inventoryShowing;
+
     public TileClass selectedTile;
 
     public int playerRange;
@@ -31,6 +34,7 @@ public class PlayerController : MonoBehaviour
         GetComponent<Transform>().position = spawPosition;
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        inventory = GetComponent<Inventory>();
     }
 
     public void OnTriggerStay2D(Collider2D collision)
@@ -60,6 +64,11 @@ public class PlayerController : MonoBehaviour
         horizontal = Input.GetAxis("Horizontal");
         float jump = Input.GetAxis("Jump");
         vertical = Input.GetAxis("Vertical");
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            inventoryShowing = !inventoryShowing;
+        }
 
         Vector2 movement = new Vector2(horizontal * moveSpeed, rb.velocity.y);
 
@@ -109,8 +118,11 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        
         mousePosition.x = Mathf.RoundToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition).x - 0.5f);
         mousePosition.y = Mathf.RoundToInt(Camera.main.ScreenToWorldPoint(Input.mousePosition).y - 0.5f);
+
+        inventory.inventoryUI.SetActive(inventoryShowing);
 
         animator.SetFloat("horizontal", horizontal);
         animator.SetBool("hit", hit || place);
