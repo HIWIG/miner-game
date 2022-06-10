@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public Vector2Int mousePosition;
 
     public TerrainGenerator terrainGenerator;
+    public Inventory Inventory;
 
     public void Spawn()
     {

@@ -5,4 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Inventory", menuName = "Inventory")]
 public class Inventory : ScriptableObject
 {
+    
+    public int mineral;
+
+    public void addMineral()
+    {
+       
+        mineral++;
+    }
 }

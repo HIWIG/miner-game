@@ -11,6 +11,7 @@ public class UI_ShopSell : MonoBehaviour
     public float Coins;
     public int length;
 
+
     void Start()
     {
         CoinsTxt.text = "Coins:" + Coins.ToString();
@@ -37,15 +38,14 @@ public class UI_ShopSell : MonoBehaviour
     {
         GameObject ButtonRef = GameObject.FindGameObjectWithTag("Event").GetComponent<EventSystem>().currentSelectedGameObject;
 
-        
-            Coins += shopItems[2, ButtonRef.GetComponent<ItemsSell>().ItemId];
-           // shopItems[3, ButtonRef.GetComponent<ItemsSell>().ItemId]--;
-            CoinsTxt.text = "Coins:" + Coins.ToString();
+        GameObject.Find("Coin").GetComponent<CoinControler>().Add(shopItems[2, ButtonRef.GetComponent<ItemsSell>().ItemId]);
+        // shopItems[3, ButtonRef.GetComponent<ItemsSell>().ItemId]--;
+        CoinsTxt.text = "Coins:" + GameObject.Find("Coin").GetComponent<CoinControler>().GetCoin();
 
-           // ButtonRef.GetComponent<ItemsSell>().QualityText.text = shopItems[3, ButtonRef.GetComponent<ItemsSell>().ItemId].ToString();
-        
+        // ButtonRef.GetComponent<ItemsSell>().QualityText.text = shopItems[3, ButtonRef.GetComponent<ItemsSell>().ItemId].ToString();
+
 
     }
-  
+
 
 }

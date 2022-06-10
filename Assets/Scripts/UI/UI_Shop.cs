@@ -42,11 +42,13 @@ public class UI_Shop : MonoBehaviour
     {
         GameObject ButtonRef = GameObject.FindGameObjectWithTag("Event").GetComponent<EventSystem>().currentSelectedGameObject;
 
-        if (Coins >= shopItems[2, ButtonRef.GetComponent<Items>().ItemId])
+        if (GameObject.Find("Coin").GetComponent<CoinControler>().GetCoin() >= shopItems[2, ButtonRef.GetComponent<Items>().ItemId])
         {
-            Coins -= shopItems[2, ButtonRef.GetComponent<Items>().ItemId];
+            GameObject.Find("Coin").GetComponent<CoinControler>().Delete(shopItems[2, ButtonRef.GetComponent<Items>().ItemId]);
             shopItems[3, ButtonRef.GetComponent<Items>().ItemId]++;
-            CoinsTxt.text = "Coins:" + Coins.ToString();
+            //CoinsTxt.text = "Coins:" + Coins.ToString();
+
+            CoinsTxt.text = "Coins:" + GameObject.Find("Coin").GetComponent<CoinControler>().GetCoin();
 
             ButtonRef.GetComponent<Items>().QualityText.text = shopItems[3, ButtonRef.GetComponent<Items>().ItemId].ToString();
         }
