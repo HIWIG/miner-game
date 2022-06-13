@@ -287,6 +287,8 @@ public class TerrainGenerator : MonoBehaviour
             {
                 GameObject newTileDrop = Instantiate(tileDrop, new Vector2(x, y + 0.5f), Quaternion.identity);
                 newTileDrop.GetComponent<SpriteRenderer>().sprite = worldTileClasses[index].droppedSprite;
+                ItemClass tileDropItem = new ItemClass(worldTileClasses[index]);
+                newTileDrop.GetComponent<TileDropController>().item = tileDropItem;
             }
             worldTilesObjects.RemoveAt(index);
             worldTiles.RemoveAt(index);
