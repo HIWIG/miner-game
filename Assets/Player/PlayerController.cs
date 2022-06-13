@@ -26,6 +26,9 @@ public class PlayerController : MonoBehaviour
 
     public TerrainGenerator terrainGenerator;
 
+    public Inventory inventory;
+    //public TileDropController tileDropController;
+    public int licznik { get; set; } = 0;
     public void Spawn()
     {
         GetComponent<Transform>().position = spawPosition;
@@ -127,5 +130,6 @@ public class PlayerController : MonoBehaviour
             isClimbing = false;
         }
 
+        //tileDropController.Diamonds;
     }
 }
