@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637907245174147634
-    m_Hash: 932498063
+      ticks: 637904794358476129
+    m_Hash: 2839380630
   m_LockFileStatus:
     m_FilePath: C:/Users/Omush/Documents/GitHub/gras/miner-game/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 637907245174157637
-    m_Hash: 1442793754
+      ticks: 637904794437604920
+    m_Hash: 912383489
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -133,7 +133,6 @@ m_ResolvedPackages:
     - 8.0.0-pre.4
     - 8.0.0
     - 8.0.1
-    - 8.0.2
     - 9.0.0-pre.1
     compatible:
     - 7.0.4
@@ -341,16 +340,13 @@ m_ResolvedPackages:
     - 6.0.1
     - 6.0.2
     - 6.0.3
-    - 6.0.4
     - 7.0.0-pre.3
     - 7.0.0-pre.4
     - 7.0.0
-    - 7.0.1
     - 8.0.0-pre.1
     compatible:
     - 6.0.3
-    - 6.0.4
-    verified: 6.0.4
+    verified: 6.0.3
   dependencies:
   - name: com.unity.2d.animation
     version: 7.0.4
@@ -1862,29 +1858,6 @@ m_ResolvedPackages:
   errors: []
   versions:
     all:
-    - 1.0.0
-    - 1.0.2
-    - 1.0.3
-    - 1.3.1
-    - 1.3.2
-    - 1.3.4
-    - 1.3.5
-    - 1.3.6
-    - 1.3.7
-    - 1.3.8
-    - 1.3.11
-    - 2.0.1
-    - 2.0.2
-    - 2.0.4
-    - 2.0.6
-    - 2.0.8
-    - 2.1.1
-    - 2.1.2
-    - 2.1.3
-    - 2.1.4
-    - 2.1.6
-    - 2.1.7
-    - 2.1.8
     - 2.1.9
     compatible:
     - 2.1.9
@@ -1920,7 +1893,7 @@ m_ResolvedPackages:
     capabilities: 7
   hideInEditor: 1
   isAssetStorePackage: 0
-  datePublishedTicks: 637812095140000000
+  datePublishedTicks: 0
   documentationUrl: 
   hasRepository: 1
   repository:
